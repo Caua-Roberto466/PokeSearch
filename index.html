@@ -1,0 +1,165 @@
+<!-- Informa ao navegador que o documento utiliza HTML5 -->
+<!DOCTYPE html>
+
+<!-- Tag raiz do documento HTML.
+     O atributo lang="pt-br" informa que o conteúdo está em português do Brasil. -->
+<html lang="pt-br">
+
+<head>
+
+    <!-- Define a codificação de caracteres como UTF-8.
+         Permite exibir corretamente acentos, cedilhas e emojis. -->
+    <meta charset="UTF-8">
+
+    <!-- Configura a responsividade da página.
+         Faz com que o site se adapte corretamente a celulares e tablets. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Define o título exibido na aba do navegador. -->
+    <title>Pokédex</title>
+
+    <!-- Importa as fontes Fredoka (títulos) e Nunito (textos) do Google Fonts.
+         Se estiver sem internet, o navegador usa uma fonte padrão no lugar. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Importa o arquivo CSS responsável pela estilização da página. -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- Cabeçalho da página, no estilo de um aparelho Pokédex.
+         Os spans vazios são apenas enfeites desenhados pelo CSS (lente e luzes). -->
+    <header class="topo">
+        <div class="lente"></div>
+        <div class="luzes">
+            <span class="l-vermelha"></span>
+            <span class="l-amarela"></span>
+            <span class="l-verde"></span>
+        </div>
+
+        <!-- Título principal exibido na página. -->
+        <h1>Pokédex</h1>
+        <p>Pesquise um Pokémon pelo nome e veja tudo sobre ele.</p>
+    </header>
+
+    <!-- Container principal que agrupa todos os elementos da aplicação. -->
+    <main class="container">
+
+        <!-- Formulário de pesquisa.
+             O onsubmit chama consultarPokemon() tanto ao clicar no botão quanto ao apertar Enter.
+             O "return false" impede que a página recarregue ao enviar o formulário. -->
+        <form class="busca" onsubmit="consultarPokemon(); return false;">
+
+            <!-- O atributo for liga o texto ao campo que possui o mesmo id. -->
+            <label for="pokemon">Nome do Pokémon</label>
+
+            <div class="busca-linha">
+
+                <!-- Campo de entrada onde o usuário digita o nome do Pokémon.
+                     O id será utilizado pelo JavaScript para acessar esse elemento.
+                     O placeholder exibe um texto de orientação dentro do campo. -->
+                <input
+                    type="text"
+                    id="pokemon"
+                    placeholder="Ex.: pikachu, charizard, mr-mime"
+                    autocomplete="off"
+                >
+
+                <!-- Botão que envia o formulário e executa a função consultarPokemon(). -->
+                <button type="submit">
+                    Consultar
+                </button>
+
+            </div>
+        </form>
+
+        <!-- Área de mensagens (erros e avisos).
+             Começa com a orientação inicial e o JavaScript troca o texto quando necessário. -->
+        <div class="aviso" id="mensagem">
+            <div class="aviso-bola"></div>
+            <p id="textoMensagem">Digite o nome de um Pokémon (em inglês) e clique em Consultar.</p>
+        </div>
+
+        <!-- Área de resultados.
+             Fica escondida (hidden) até que a API retorne um Pokémon com sucesso.
+             O JavaScript preenche cada elemento pelo seu id. -->
+        <article class="cartao" id="resultado" hidden>
+
+            <!-- Faixa colorida do topo: número, nome, categoria e tipos. -->
+            <div class="cartao-topo">
+                <span class="numero" id="numero"></span>
+                <h2 id="nomePokemon"></h2>
+                <p class="categoria" id="categoria"></p>
+                <div class="tipos" id="tipos"></div>
+            </div>
+
+            <!-- Palco com a imagem oficial do Pokémon. -->
+            <div class="palco">
+                <div class="palco-bola"></div>
+                <img class="arte" id="arte" src="" alt="">
+            </div>
+
+            <!-- Descrição da Pokédex. -->
+            <p class="descricao" id="descricao"></p>
+
+            <!-- Altura, peso e experiência base. -->
+            <div class="medidas">
+                <div><strong id="altura"></strong><span>Altura</span></div>
+                <div><strong id="peso"></strong><span>Peso</span></div>
+                <div><strong id="xp"></strong><span>XP base</span></div>
+            </div>
+
+            <!-- Blocos com as demais informações. -->
+            <div class="blocos">
+
+                <section class="bloco">
+                    <h3>Habilidades</h3>
+                    <ul class="chips" id="habilidades"></ul>
+                </section>
+
+                <section class="bloco">
+                    <h3>Espécie</h3>
+                    <dl class="dados">
+                        <dt>Habitat</dt><dd id="habitat"></dd>
+                        <dt>Grupo de ovos</dt><dd id="ovos"></dd>
+                        <dt>Golpes aprendidos</dt><dd id="totalGolpes"></dd>
+                    </dl>
+                </section>
+
+                <!-- A classe "largo" faz o bloco ocupar a linha inteira. -->
+                <section class="bloco largo">
+                    <h3>Atributos base <small id="totalStats"></small></h3>
+                    <ul class="stats" id="stats"></ul>
+                </section>
+
+                <section class="bloco largo">
+                    <h3>Sprites</h3>
+                    <ul class="sprites" id="sprites"></ul>
+                </section>
+
+                <section class="bloco largo">
+                    <h3>Alguns golpes <small id="infoGolpes"></small></h3>
+                    <ul class="chips" id="golpes"></ul>
+                </section>
+
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Rodapé com o crédito da API utilizada. -->
+    <footer class="rodape">
+        Dados da <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>
+    </footer>
+
+    <!-- Importa o arquivo JavaScript.
+         O navegador carregará e executará o código contido em script.js. -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>

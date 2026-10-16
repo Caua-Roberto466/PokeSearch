@@ -1,0 +1,371 @@
+/* ===== Paleta ===== */
+:root {
+    --vermelho: #d6283b;
+    --vermelho-escuro: #9e1526;
+    --azul-lente: #3fb4ff;
+    --noite: #141a33;
+    --noite-2: #1d2547;
+    --papel: #f6f3ec;
+    --tinta: #1c2038;
+    --suave: #6b7090;
+    --cor: #8a8fa8; /* cor do tipo principal, trocada por .t-xxx */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 15% 10%, #2b3470 0, transparent 45%),
+        radial-gradient(circle at 90% 85%, #3a1c4d 0, transparent 40%),
+        var(--noite);
+    background-attachment: fixed;
+}
+
+h1, h2, h3 { font-family: 'Fredoka', sans-serif; }
+
+/* ===== Cores por tipo ===== */
+.t-normal   { --cor: #a8a77a; }
+.t-fire     { --cor: #ee7a30; }
+.t-water    { --cor: #5b8def; }
+.t-electric { --cor: #f2c10e; }
+.t-grass    { --cor: #5fb34a; }
+.t-ice      { --cor: #6fcfd0; }
+.t-fighting { --cor: #c22e28; }
+.t-poison   { --cor: #a33ea1; }
+.t-ground   { --cor: #d6ad4f; }
+.t-flying   { --cor: #8f8bea; }
+.t-psychic  { --cor: #f95587; }
+.t-bug      { --cor: #8fa51a; }
+.t-rock     { --cor: #b6a136; }
+.t-ghost    { --cor: #735797; }
+.t-dragon   { --cor: #6f35fc; }
+.t-dark     { --cor: #705746; }
+.t-steel    { --cor: #8c8cab; }
+.t-fairy    { --cor: #e88fb3; }
+
+/* ===== Topo estilo Pokédex ===== */
+.topo {
+    position: relative;
+    background: linear-gradient(180deg, var(--vermelho) 0%, var(--vermelho-escuro) 100%);
+    padding: 28px 24px 34px 128px;
+    border-bottom: 8px solid #0d1022;
+    box-shadow: 0 6px 0 #fff2, 0 12px 30px #0008;
+}
+
+.topo h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: 0.5px; }
+.topo p  { opacity: 0.9; margin-top: 2px; }
+
+.lente {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    background: radial-gradient(circle at 32% 30%, #fff 0 9%, #aee2ff 10% 24%, var(--azul-lente) 25% 100%);
+    box-shadow: 0 0 0 5px #0d1022, 0 0 28px #3fb4ff99;
+}
+
+.luzes {
+    position: absolute;
+    top: 14px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+}
+.luzes span {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #0d1022;
+}
+.l-vermelha { background: #ff6b6b; }
+.l-amarela  { background: #ffd84a; }
+.l-verde    { background: #5ee08a; }
+
+/* ===== Layout ===== */
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 36px 20px 20px;
+}
+
+/* ===== Busca ===== */
+.busca {
+    background: var(--noite-2);
+    border: 2px solid #ffffff1f;
+    border-radius: 18px;
+    padding: 20px;
+}
+.busca label {
+    display: block;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.busca-linha { display: flex; gap: 10px; }
+
+.busca input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    font-size: 1.05rem;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 3px solid #0d1022;
+    background: var(--papel);
+    color: var(--tinta);
+}
+.busca input:focus-visible { outline: 3px solid var(--azul-lente); outline-offset: 2px; }
+
+.busca button {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0 26px;
+    border: 3px solid #0d1022;
+    border-radius: 12px;
+    background: var(--vermelho);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--vermelho-escuro);
+    transition: transform 0.08s, box-shadow 0.08s;
+}
+.busca button:hover { background: #e63a4d; }
+.busca button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--vermelho-escuro); }
+.busca button:focus-visible { outline: 3px solid var(--azul-lente); outline-offset: 2px; }
+
+/* ===== Avisos / estado vazio ===== */
+.resultado { margin-top: 28px; }
+
+.aviso {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--noite-2);
+    border: 2px dashed #ffffff33;
+    border-radius: 18px;
+    padding: 24px;
+}
+.aviso p { font-size: 1.05rem; }
+
+.aviso-bola {
+    flex: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 4px solid #0d1022;
+    background: linear-gradient(180deg, var(--vermelho) 0 46%, #0d1022 46% 54%, #fff 54% 100%);
+    position: relative;
+}
+.aviso-bola::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 16px;
+    height: 16px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #0d1022;
+}
+
+/* ===== Cartão do Pokémon ===== */
+.cartao {
+    background: var(--papel);
+    color: var(--tinta);
+    border-radius: 24px;
+    border: 4px solid #0d1022;
+    overflow: hidden;
+    box-shadow: 0 0 0 4px var(--cor), 0 24px 50px #0009;
+}
+
+.cartao-topo {
+    background: var(--cor);
+    color: #fff;
+    padding: 22px 26px 18px;
+    text-shadow: 0 2px 0 #0003;
+}
+.numero { font-family: 'Fredoka', sans-serif; font-weight: 600; opacity: 0.85; }
+.cartao-topo h2 { font-size: 2.6rem; line-height: 1.1; font-weight: 700; }
+.categoria { margin-top: 2px; font-weight: 600; opacity: 0.92; }
+
+.tipos { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.tipo {
+    background: var(--cor);
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    padding: 4px 16px;
+    border-radius: 999px;
+    border: 3px solid #fff;
+    text-shadow: 0 1px 0 #0004;
+    box-shadow: 0 2px 0 #0003;
+}
+
+/* Palco com Pokébola de fundo */
+.palco {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--cor) 22%, #fff) 0%, var(--papel) 100%);
+    overflow: hidden;
+}
+.palco-bola {
+    position: absolute;
+    width: 330px;
+    height: 330px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #0d10220f 0 46%, #0d102214 46% 54%, #ffffff66 54% 100%);
+    border: 14px solid #0d10220f;
+}
+.arte {
+    position: relative;
+    width: min(320px, 80%);
+    height: auto;
+    filter: drop-shadow(0 14px 14px #0004);
+}
+
+.descricao {
+    padding: 8px 32px 4px;
+    text-align: center;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0 auto;
+}
+
+/* Medidas */
+.medidas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px 26px 6px;
+}
+.medidas div {
+    background: #fff;
+    border: 3px solid #0d1022;
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+}
+.medidas strong { display: block; font-family: 'Fredoka', sans-serif; font-size: 1.4rem; }
+.medidas span { color: var(--suave); font-size: 0.9rem; }
+
+/* Blocos de informação */
+.blocos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px 26px 28px;
+}
+.bloco {
+    background: #fff;
+    border: 3px solid #0d1022;
+    border-radius: 16px;
+    padding: 16px 18px;
+}
+.bloco.largo { grid-column: 1 / -1; }
+
+.bloco h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--cor);
+}
+.bloco h3 small { font-family: 'Nunito', sans-serif; font-weight: 600; color: var(--suave); margin-left: 6px; font-size: 0.85rem; }
+
+/* Chips (habilidades e golpes) */
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.chips li {
+    background: color-mix(in srgb, var(--cor) 18%, #fff);
+    border: 2px solid var(--cor);
+    border-radius: 10px;
+    padding: 4px 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.chips li.oculta { border-style: dashed; }
+.chips li small { color: var(--suave); font-weight: 600; margin-left: 4px; }
+
+/* Lista de dados da espécie */
+.dados { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; }
+.dados dt { color: var(--suave); font-weight: 600; }
+.dados dd { font-weight: 700; }
+
+/* Barras de atributos */
+.stats { list-style: none; display: grid; gap: 10px; }
+.stats li {
+    display: grid;
+    grid-template-columns: 120px 44px 1fr;
+    align-items: center;
+    gap: 10px;
+}
+.stat-nome { font-weight: 600; }
+.stat-valor { font-family: 'Fredoka', sans-serif; font-weight: 600; text-align: right; }
+.barra {
+    height: 14px;
+    background: #e3e0d6;
+    border: 2px solid #0d1022;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.barra span {
+    display: block;
+    height: 100%;
+    background: var(--cor);
+    border-radius: 999px;
+    animation: encher 0.8s ease-out both;
+}
+@keyframes encher { from { width: 0; } }
+
+/* Sprites */
+.sprites { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
+.sprites li {
+    text-align: center;
+    background: color-mix(in srgb, var(--cor) 12%, #fff);
+    border-radius: 12px;
+    padding: 6px;
+}
+.sprites img { width: 96px; height: 96px; image-rendering: pixelated; }
+.sprites span { display: block; color: var(--suave); font-size: 0.85rem; font-weight: 600; }
+
+/* ===== Rodapé ===== */
+.rodape { text-align: center; padding: 24px; color: #fff9; font-size: 0.9rem; }
+.rodape a { color: var(--azul-lente); }
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+    .topo { padding: 22px 18px 26px 100px; }
+    .topo h1 { font-size: 1.9rem; }
+    .lente { width: 58px; height: 58px; left: 20px; }
+    .busca-linha { flex-direction: column; }
+    .busca button { padding: 12px; }
+    .blocos { grid-template-columns: 1fr; padding: 14px 16px 22px; }
+    .cartao-topo h2 { font-size: 2rem; }
+    .stats li { grid-template-columns: 96px 38px 1fr; }
+    .medidas { padding: 16px 16px 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .barra span { animation: none; }
+}
+
+/* ===== Ajustes para a versão em JavaScript ===== */
+
+/* O atributo hidden precisa vencer o display definido nas classes abaixo. */
+[hidden] { display: none !important; }
+
+/* Espaço entre a busca e a área de mensagens/resultado. */
+.aviso { margin-top: 28px; }
+.cartao { margin-top: 28px; }
+
+/* Descrição vazia não ocupa espaço. */
+.descricao:empty, .categoria:empty { display: none; }
