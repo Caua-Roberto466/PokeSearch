@@ -44,6 +44,59 @@ function mostrarMensagem(texto) {
     document.getElementById("resultado").hidden = true;
 }
 
+// Função que consulta o arquivo api.php (PHP), que busca os dados na PokeAPI.
+// Devolve { encontrado, dados, especie }. Se algo der errado, lança um erro.
+async function buscarPeloPhp(busca) {
+
+    // Chama o PHP passando o nome pela URL (api.php?nome=pikachu).
+    const resposta = await fetch("api.php?nome=" + encodeURIComponent(busca));
+
+    // Lê o JSON da resposta.
+    // Se o servidor não tiver PHP, a resposta não é JSON e esta linha lança um erro.
+    const json = await resposta.json();
+
+    // O PHP avisou que a PokeAPI não conhece esse nome.
+    if (json.erro === "nao_encontrado") {
+        return { encontrado: false };
+    }
+
+    // Qualquer outro problema vira erro, para o código usar o plano B.
+    if (json.erro || !json.pokemon) {
+        throw new Error("Falha no PHP: " + (json.erro || "resposta inesperada"));
+    }
+
+    return { encontrado: true, dados: json.pokemon, especie: json.especie };
+}
+
+// Função que consulta a PokeAPI diretamente do navegador (plano B, sem PHP).
+// Devolve o mesmo formato da função buscarPeloPhp.
+async function buscarDireto(busca) {
+
+    // Primeira requisição: dados do Pokémon.
+    const resposta = await fetch(
+        "https://pokeapi.co/api/v2/pokemon/" + encodeURIComponent(busca)
+    );
+
+    // Quando o Pokémon não existe, a API retorna o código 404.
+    if (resposta.status === 404) {
+        return { encontrado: false };
+    }
+
+    // Outros erros (API fora do ar, por exemplo) caem no catch da consultarPokemon.
+    if (!resposta.ok) {
+        throw new Error("Erro na PokeAPI: " + resposta.status);
+    }
+
+    const dados = await resposta.json();
+
+    // Segunda requisição: dados da espécie.
+    // Se der errado, usa null e a página mostra o restante normalmente.
+    const respostaEspecie = await fetch(dados.species.url);
+    const especie = respostaEspecie.ok ? await respostaEspecie.json() : null;
+
+    return { encontrado: true, dados: dados, especie: especie };
+}
+
 // Declara uma função assíncrona chamada consultarPokemon.
 // O uso de "async" permite utilizar "await" para aguardar respostas de APIs.
 async function consultarPokemon() {
@@ -76,36 +129,31 @@ async function consultarPokemon() {
     // Caso ocorra algum erro, o código irá para o bloco "catch".
     try {
 
-        // Realiza uma requisição HTTP para a PokeAPI.
-        // O comando await faz o programa aguardar a resposta da API.
-        // encodeURIComponent protege a URL contra caracteres especiais.
-        const resposta = await fetch(
-            "https://pokeapi.co/api/v2/pokemon/" + encodeURIComponent(busca)
-        );
+        // Variável que vai guardar o resultado da busca.
+        let resultado;
 
-        // Verifica se a resposta NÃO foi bem-sucedida.
-        // Quando o Pokémon não existe, a API retorna o código 404.
-        if (!resposta.ok) {
+        try {
 
-            // Exibe uma mensagem informando que o Pokémon não foi encontrado.
+            // Primeiro tenta pelo PHP (api.php), que consulta a PokeAPI pelo servidor.
+            resultado = await buscarPeloPhp(busca);
+
+        } catch (erroPhp) {
+
+            // Se o PHP não estiver disponível (ex.: abrindo o index.html direto no navegador),
+            // o site continua funcionando e consulta a PokeAPI diretamente.
+            console.log("PHP indisponível, consultando a PokeAPI direto:", erroPhp);
+            resultado = await buscarDireto(busca);
+        }
+
+        // Se o Pokémon não existe, mostra o aviso e interrompe a função.
+        if (!resultado.encontrado) {
             mostrarMensagem("Pokémon não encontrado! Confira se o nome está escrito em inglês.");
-
-            // Interrompe a execução da função.
             return;
         }
 
-        // Converte a resposta recebida da API para o formato JSON.
-        // JSON é um formato utilizado para troca de dados entre sistemas.
-        const dados = await resposta.json();
-
-        // Faz uma segunda requisição, agora para os dados da espécie.
-        // O endereço já vem pronto dentro do primeiro JSON (dados.species.url).
-        // Nela estão a descrição, a categoria, o habitat e os grupos de ovos.
-        const respostaEspecie = await fetch(dados.species.url);
-
-        // Se a segunda requisição deu certo, converte para JSON.
-        // Se deu errado, usa null e a página mostra o restante normalmente.
-        const especie = respostaEspecie.ok ? await respostaEspecie.json() : null;
+        // Separa os dois JSONs recebidos (Pokémon e espécie).
+        const dados = resultado.dados;
+        const especie = resultado.especie;
 
         // Chama a função que preenche a tela com os dados recebidos.
         exibirPokemon(dados, especie);
